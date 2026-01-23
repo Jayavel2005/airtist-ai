@@ -43,3 +43,17 @@ export const deleteImage = async (req, res, next) =>{
         console.log(e.message)
     }
 }
+
+export const getAllImages = async (req, res, next) =>{
+    try{
+        const images = await Images.find();
+        res.status(200).json({
+            success : true,
+            data : {
+                images,
+            }
+        })
+    }catch (e) {
+        console.log(e.message);
+    }
+}
