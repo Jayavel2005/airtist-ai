@@ -13,17 +13,15 @@ export const generateImage =async (req, res, next) =>{
 
     const base64imgStr = Buffer.from(imageBuffer).toString("base64");
 
-    const newImage = {
+    const newImage = Images({
         prompt,
-        base64img : base64imgStr,
-    }
+        imgUrl : base64imgStr,
+    });
 
-    await Images.save(newImage);
+    await newImage.save();
 
     res.status(200).json({
         success : true,
-        data : form,
-    })
-
-
+        data : newImage,
+    });
 }

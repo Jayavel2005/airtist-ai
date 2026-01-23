@@ -1,4 +1,9 @@
 import {Router} from "express";
+import FormData from "form-data";
+import axios from "axios";
+import {config} from "../config/env.js";
+import * as fs from "node:fs";
+import {generateImage} from "../controllers/image.controller.js";
 
 export const imgRouter = Router();
 
@@ -9,23 +14,18 @@ GET      /api/v1/images
 DELETE   /api/v1/images/:id
 */
 
-imgRouter.get("/", (req, res)=>{
-    res.status(200).json({
-        success : true,
-        message : "/api/v1/images is fine."
-    })
-})
+// imgRouter.get("/", (req, res)=>{
+//     res.status(200).json({
+//         success : true,
+//         message : "/api/v1/images is fine."
+//     })
+// })
 
-imgRouter.get("/generate", (req, res)=>{
-    res.status(200).json({
-        success : true,
-        message : "/api/v1/images/generate is fine."
-    })
-})
+imgRouter.post("/generate",generateImage);
 
-imgRouter.get("/:id", (req,res)=>{
-    res.status(200).json({
-        success : true,
-        message : "/api/v1/images/:id is fine."
-    })
-})
+// imgRouter.get("/:id", (req,res)=>{
+//     res.status(200).json({
+//         success : true,
+//         message : "/api/v1/images/:id is fine."
+//     })
+// })
