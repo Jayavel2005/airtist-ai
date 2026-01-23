@@ -7,7 +7,7 @@ const ImageModel = new mongoose.Schema({
         required : true,
     },
     imgUrl : {
-        type : String,
+        type : Buffer,
         required : true,
     },
 },{

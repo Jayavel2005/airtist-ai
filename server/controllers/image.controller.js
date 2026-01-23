@@ -2,26 +2,44 @@ import FormData from "form-data";
 import axios from "axios";
 import {generateImageService} from "../services/image.service.js";
 import {Images} from "../models/imageModel.js";
+
 export const generateImage =async (req, res, next) =>{
-    const {prompt} = req.body;
+    try{
+        const { prompt } = req.body;
 
-    const form = new FormData();
+        const form = new FormData();
+        form.append("prompt", prompt);
 
-    form.append("prompt", prompt);
+        const imageBuffer = await generateImageService(form);
+        const base64imgStr = Buffer.from(imageBuffer).toString("base64");
 
-    const imageBuffer = await generateImageService(form);
+        const newImage = Images({
+            prompt,
+            imgUrl : imageBuffer,
+        });
+        await newImage.save();
 
-    const base64imgStr = Buffer.from(imageBuffer).toString("base64");
+        res.status(200).json({
+            success : true,
+            data : newImage,
+        });
+    }catch (e){
+        console.log(e.message);
+    }
+}
 
-    const newImage = Images({
-        prompt,
-        imgUrl : base64imgStr,
-    });
+export const deleteImage = async (req, res, next) =>{
+    try{
+        const {id}  = req.params;
 
-    await newImage.save();
+        await Images.findByIdAndDelete(id);
 
-    res.status(200).json({
-        success : true,
-        data : newImage,
-    });
+        res.status(203).json({
+            success : true,
+            message : "Image deleted successfully.",
+        })
+
+    }catch (e) {
+        console.log(e.message)
+    }
 }

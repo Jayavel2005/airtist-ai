@@ -3,7 +3,7 @@ import FormData from "form-data";
 import axios from "axios";
 import {config} from "../config/env.js";
 import * as fs from "node:fs";
-import {generateImage} from "../controllers/image.controller.js";
+import {generateImage, deleteImage} from "../controllers/image.controller.js";
 
 export const imgRouter = Router();
 
@@ -23,9 +23,4 @@ DELETE   /api/v1/images/:id
 
 imgRouter.post("/generate",generateImage);
 
-// imgRouter.get("/:id", (req,res)=>{
-//     res.status(200).json({
-//         success : true,
-//         message : "/api/v1/images/:id is fine."
-//     })
-// })
+imgRouter.delete("/:id", deleteImage);
