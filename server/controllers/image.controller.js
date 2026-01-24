@@ -31,7 +31,7 @@ export const generateImage =async (req, res, next) =>{
 
         res.status(200).json({
             success : true,
-            imgUrl,
+            data : newImage,
         });
 
     }catch (e){
@@ -68,3 +68,29 @@ export const getAllImages = async (req, res, next) =>{
         console.log(e.message);
     }
 }
+
+
+export const downloadImage = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        const image = await Images.findById(id);
+        if (!image) {
+            return res.status(404).json({ message: "Image not found" });
+        }
+
+        const imageUrl = image.imgUrl;
+
+        // 🔥 Cloudinary force-download trick
+        const downloadUrl = imageUrl.replace(
+            "/upload/",
+            "/upload/fl_attachment/"
+        );
+
+        // ✅ Redirect browser → Cloudinary handles download
+        return res.redirect(downloadUrl);
+    } catch (error) {
+        console.error("Download error:", error.message);
+        res.status(500).json({ message: "Failed to download image" });
+    }
+};
