@@ -1,8 +1,7 @@
 import FormData from "form-data";
-import axios from "axios";
 import {generateImageService} from "../services/image.service.js";
 import {Images} from "../models/imageModel.js";
-
+import cloudinary from "../config/cloudinary.js";
 export const generateImage =async (req, res, next) =>{
     try{
         const { prompt } = req.body;
@@ -13,16 +12,28 @@ export const generateImage =async (req, res, next) =>{
         const imageBuffer = await generateImageService(form);
         const base64imgStr = Buffer.from(imageBuffer).toString("base64");
 
+        // Cloudinary Upload.
+
+        const result = await cloudinary.uploader.upload(
+            `data:image/png;base64,${base64imgStr}`,{
+                folder : "airtist"
+            }
+        );
+
+        const imgUrl = result.secure_url;
+
         const newImage = Images({
             prompt,
-            imgUrl : imageBuffer,
+            imgUrl,
         });
+
         await newImage.save();
 
         res.status(200).json({
             success : true,
-            data : newImage,
+            imgUrl,
         });
+
     }catch (e){
         console.log(e.message);
     }
