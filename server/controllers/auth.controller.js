@@ -2,7 +2,6 @@ import bcrypt from "bcrypt";
 import { User } from "../models/user.model.js";
 import { generateToken } from "../utils/jwt.util.js";
 
-/* SIGNUP */
 export const signup = async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -23,19 +22,25 @@ export const signup = async (req, res) => {
       password: hashedPassword,
     });
 
-    const userObj = user.toObject();
-    delete userObj.password;
-
     res.status(201).json({
       success: true,
-      user: userObj,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        credits: user.credits,
+        images: user.images,
+        createdAt: user.createdAt,
+      },
     });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
   }
 };
 
-/* LOGIN */
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -44,7 +49,7 @@ export const login = async (req, res) => {
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: "user nor found....",
+        message: "User not found",
       });
     }
 
@@ -58,7 +63,6 @@ export const login = async (req, res) => {
 
     const token = generateToken(user);
 
-    // ✅ COOKIE
     res.cookie("token", token, {
       httpOnly: true,
       sameSite: "lax",
@@ -66,22 +70,29 @@ export const login = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    const userObj = user.toObject();
-    delete userObj.password;
-
     res.status(200).json({
       success: true,
-      user: userObj,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        credits: user.credits,
+        images: user.images,
+        createdAt: user.createdAt,
+      },
     });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
   }
 };
+
 
 export const logout = (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
-    secure: false,
     sameSite: "lax",
     secure: false,
   });
@@ -92,16 +103,24 @@ export const logout = (req, res) => {
   });
 };
 
+
 export const getMe = (req, res) => {
   try {
     res.status(200).json({
       success: true,
-      user: req.user,
+      user: {
+        id: req.user._id,
+        username: req.user.username,
+        email: req.user.email,
+        credits: req.user.credits,
+        images: req.user.images,
+        createdAt: req.user.createdAt,
+      },
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "failed to fetch user",
+      message: "Failed to fetch user",
     });
   }
 };

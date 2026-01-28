@@ -2,16 +2,17 @@ import { Router } from "express";
 import {
   generateImage,
   deleteImage,
-  getAllImages,
+  getMyImages,
   downloadImage,
 } from "../controllers/image.controller.js";
-import { authMiddleware } from "../middlewares/auth.middleware.js";
 
 export const imgRouter = Router();
 
-// imgRouter.use(authMiddleware);
 
-imgRouter.get("/", getAllImages);
 imgRouter.post("/generate", generateImage);
-imgRouter.get("/download/:id", downloadImage);
-imgRouter.delete("/:id", deleteImage);
+
+imgRouter.get("/", getMyImages);
+
+imgRouter.delete("/:index", deleteImage);
+
+imgRouter.get("/download/:index", downloadImage);

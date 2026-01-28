@@ -19,22 +19,18 @@ app.use(
   cors({
     origin: "http://localhost:5173",
     credentials: true,
-  })
+  }),
 );
 
-// ✅ AUTH ROUTES (PUBLIC)
 app.use("/api/v1/auth", authRouter);
 
-// ✅ PROTECTED IMAGE ROUTES
 app.use("/api/v1/images", authMiddleware, imgRouter);
 
-// ✅ COOKIE TEST ROUTE (BACKEND ONLY)
 app.get("/test-cookie", (req, res) => {
   console.log("Cookies received:", req.cookies);
   res.json(req.cookies);
 });
 
-// Health check
 app.get("/", (req, res) => {
   res.status(200).json({
     success: true,
