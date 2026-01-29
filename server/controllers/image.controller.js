@@ -1,5 +1,6 @@
 import FormData from "form-data";
 import { generateImageService } from "../services/image.service.js";
+import {refinePromptService} from "../services/promptRefiner.service.js";
 import cloudinary from "../config/cloudinary.js";
 
 
@@ -133,3 +134,25 @@ export const downloadImage = async (req, res) => {
     });
   }
 };
+
+
+export const refinePrompt = async (req, res, next) =>{
+  try{
+    const {prompt} = req.body;
+
+    const refinedPrompt = await refinePromptService(prompt);
+
+    console.log(refinedPrompt);
+
+    res.status(200).json({
+      success : true,
+      refinedPrompt,
+    });
+  }catch (e){
+    console.error("Prompt refining error", e.message);
+    res.status(500).json({
+      success : false,
+      message : "prompt refiner error",
+    })
+  }
+}

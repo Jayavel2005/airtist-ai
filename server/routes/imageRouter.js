@@ -3,7 +3,7 @@ import {
   generateImage,
   deleteImage,
   getMyImages,
-  downloadImage,
+  downloadImage, refinePrompt,
 } from "../controllers/image.controller.js";
 
 export const imgRouter = Router();
@@ -16,3 +16,5 @@ imgRouter.get("/", getMyImages);
 imgRouter.delete("/:index", deleteImage);
 
 imgRouter.get("/download/:index", downloadImage);
+
+imgRouter.post("/refine-prompt", refinePrompt);
